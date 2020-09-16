@@ -37,10 +37,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given the FindJournal returns a journal', () => {
     it('should return a successful response with the journal', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(booking));
-      createResponseSpy.and.returnValue({ statusCode: 200 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(200);
       expect(createResponse.default).toHaveBeenCalledWith(booking);
     });
@@ -49,10 +46,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given FindJournal throws a JournalNotFound error', () => {
     it('should return HTTP 404 NOT_FOUND', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new DelegatedBookingNotFoundError());
-      createResponseSpy.and.returnValue({ statusCode: 404 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(404);
       expect(createResponse.default).toHaveBeenCalledWith({}, 404);
     });
@@ -61,10 +55,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given the FindJournal throws', () => {
     it('should respond with internal server error', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new Error('Unable to retrieve delegated booking'));
-      createResponseSpy.and.returnValue({ statusCode: 500 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(500);
       expect(createResponse.default).toHaveBeenCalledWith('Unable to retrieve delegated booking', 500);
     });
@@ -73,10 +64,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given there is no data but successful request', () => {
     it('should indicate a successful request with no data', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(null));
-      createResponseSpy.and.returnValue({ statusCode: 204 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(204);
       expect(createResponse.default).toHaveBeenCalledWith({}, 204);
     });
@@ -84,10 +72,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given there is no applicationReference provided', () => {
     it('should indicate a bad request', async () => {
       dummyApigwEvent.pathParameters = {};
-      createResponseSpy.and.returnValue({ statusCode: 400 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(400);
       expect(createResponse.default).toHaveBeenCalledWith('No applicationReference provided', 400);
     });
@@ -95,10 +80,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given there app ref is in wrong format', () => {
     it('should indicate a bad request', async () => {
       dummyApigwEvent.pathParameters = { applicationReference: '123' };
-      createResponseSpy.and.returnValue({ statusCode: 400 });
-
       const resp = await handler(dummyApigwEvent, dummyContext);
-
       expect(resp.statusCode).toBe(400);
       expect(createResponse.default).toHaveBeenCalledWith('Invalid applicationReference provided', 400);
     });
