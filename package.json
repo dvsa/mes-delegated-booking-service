@@ -24,7 +24,7 @@
   "dependencies": {
     "@hapi/joi": "^15.0.3",
     "aws-sdk": "^2.389.0",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "moment": "^2.23.0"
   },
   "devDependencies": {
