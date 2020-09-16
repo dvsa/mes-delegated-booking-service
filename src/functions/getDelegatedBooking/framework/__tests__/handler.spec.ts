@@ -37,8 +37,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given the FindJournal returns a journal', () => {
     it('should return a successful response with the journal', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(booking));
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(200);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith(booking);
     });
   });
@@ -46,8 +45,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given FindJournal throws a JournalNotFound error', () => {
     it('should return HTTP 404 NOT_FOUND', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new DelegatedBookingNotFoundError());
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(404);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith({}, 404);
     });
   });
@@ -55,8 +53,7 @@ describe('getDelegatedBooking handler', () => {
   describe('given the FindJournal throws', () => {
     it('should respond with internal server error', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new Error('Unable to retrieve delegated booking'));
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(500);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith('Unable to retrieve delegated booking', 500);
     });
   });
@@ -64,24 +61,21 @@ describe('getDelegatedBooking handler', () => {
   describe('given there is no data but successful request', () => {
     it('should indicate a successful request with no data', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(null));
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(204);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith({}, 204);
     });
   });
   describe('given there is no applicationReference provided', () => {
     it('should indicate a bad request', async () => {
       dummyApigwEvent.pathParameters = {};
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(400);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith('No applicationReference provided', 400);
     });
   });
   describe('given there app ref is in wrong format', () => {
     it('should indicate a bad request', async () => {
       dummyApigwEvent.pathParameters = { applicationReference: '123' };
-      const resp = await handler(dummyApigwEvent, dummyContext);
-      expect(resp.statusCode).toBe(400);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith('Invalid applicationReference provided', 400);
     });
   });
@@ -93,10 +87,7 @@ describe('getDelegatedBooking handler', () => {
       dummyApigwEvent.pathParameters = { applicationReference: '12345678910' };
       createResponseSpy.and.returnValue({ statusCode: 200 });
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(booking));
-
-      const resp = await handler(dummyApigwEvent, dummyContext);
-
-      expect(resp.statusCode).toBe(200);
+      await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith(booking);
       moqFindDelegatedBooking.verify(x => x(It.isValue(12345678910)), Times.once());
     });
@@ -108,10 +99,7 @@ describe('getDelegatedBooking handler', () => {
         };
         dummyApigwEvent.requestContext.authorizer = null;
         createResponseSpy.and.returnValue({ statusCode: 401 });
-
-        const resp = await handler(dummyApigwEvent, dummyContext);
-
-        expect(resp.statusCode).toBe(401);
+        await handler(dummyApigwEvent, dummyContext);
         expect(createResponse.default).toHaveBeenCalledWith('No delegated examiner role present in request', 401);
       });
     });
