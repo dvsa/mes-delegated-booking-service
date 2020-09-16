@@ -1,6 +1,21 @@
-# package directories
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+# Ignore from project
 node_modules
-jspm_packages
-
-# Serverless directories
-.serverless
+build
+npm-debug.log
+.vscode
+*.tar
+*.zip
+dist
+coverage
+artefacts
+.dynamodb/
+.serverless/
+.nyc_output/
