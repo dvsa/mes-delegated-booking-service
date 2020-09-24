@@ -28,7 +28,7 @@ export async function getDelegatedBooking(applicationReference: number): Promise
 }
 
 function getDelegatedBookingTableName(): string {
-  let tableName = process.env.DELEGATED_BOOKING_DDB_TABLE_NAME;
+  let tableName = process.env.DELEGATED_BOOKINGS_DDB_TABLE_NAME;
   if (tableName === undefined || tableName.length === 0) {
     logger.warn('No delegated booking table name set, using the default');
     tableName = 'delegated-booking';
