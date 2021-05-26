@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^15.0.3",
-    "aws-sdk": "^2.389.0",
+    "aws-sdk": "^2.900.0",
     "lodash": "^4.17.21",
     "moment": "^2.23.0"
   },
