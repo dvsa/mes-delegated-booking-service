@@ -10,7 +10,7 @@ export async function findDelegatedBooking(
 ): Promise<DelegatedExaminerTestSlot | null> {
   const delegatedBookingRecord: DelegatedBookingRecord | null = await getDelegatedBooking(appRef);
   if (!delegatedBookingRecord) {
-    throw new DelegatedBookingNotFoundError();
+    return null;
   }
 
   try {
