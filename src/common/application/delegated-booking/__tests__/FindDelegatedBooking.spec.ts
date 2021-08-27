@@ -22,16 +22,11 @@ describe('FindDelegatedBooking', () => {
   });
 
   describe('findDelegatedBooking', () => {
-    it('should throw DelegatedBookingNotFoundError when the repo cant get the booking', async () => {
-      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking').and.returnValue(null);
-
-      try {
-        await findDelegatedBooking(12345678910);
-      } catch (err) {
-        expect(err instanceof DelegatedBookingNotFoundError).toBe(true);
-        return;
-      }
-      fail();
+    it('should return null when the repo cant get the booking', async () => {
+      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking')
+          .and.returnValue(null);
+      const result = await findDelegatedBooking(12345678910);
+      expect(result).toEqual(null);
     });
 
     it('should throw a DelegatedBookingDecompressionError when the booking cannot be decompressed', async () => {
