@@ -22,10 +22,10 @@
     "test:jasmine-coverage": "nyc npm run test"
   },
   "dependencies": {
-    "@hapi/joi": "^15.0.3",
-    "aws-sdk": "^2.900.0",
+    "@hapi/joi": "^15.1.1",
+    "aws-sdk": "^2.389.0",
     "lodash": "^4.17.21",
-    "moment": "^2.23.0"
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@dvsa/mes-journal-schema": "^1.2.0",
