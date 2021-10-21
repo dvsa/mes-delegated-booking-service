@@ -18,6 +18,9 @@ functions:
           method: get
 custom:
   dynamodb:
+    stages:
+      - test
+      - dev
     start:
       port: 8000
       inMemory: true
@@ -27,7 +30,7 @@ custom:
       test:
         sources:
           - table: delegated-booking
-            sources: [./test-data/dynamo-seed-journal.json]
+            sources: [./test-data/dynamo-seed-delegated-bookings.json]
   webpack:
     webpackConfig: 'webpack-sls-offline.config.js'
 
