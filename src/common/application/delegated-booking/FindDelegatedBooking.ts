@@ -16,7 +16,7 @@ export async function findDelegatedBooking(
   try {
     return decompressDelegatedBooking(delegatedBookingRecord.bookingDetail);
   } catch (error) {
-    logger.error(error);
+    logger.error(error as string);
     throw new DelegatedBookingDecompressionError();
   }
 }

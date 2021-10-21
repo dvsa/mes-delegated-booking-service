@@ -1,5 +1,6 @@
-import { APIGatewayProxyEvent, Context, APIGatewayEventRequestContext } from 'aws-lambda';
-
+import {
+  APIGatewayProxyEvent, Context, APIGatewayEventRequestContext, APIGatewayProxyEventPathParameters,
+} from 'aws-lambda';
 import createResponse from '../../../common/application/utils/createResponse';
 import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import * as logger from '../../../common/application/utils/logger';
@@ -35,12 +36,12 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
       logger.customMetric('DelegatedBookingNotFound', 'Cannot find delegated booking (HTTP 404)');
       return createResponse({}, HttpStatus.NOT_FOUND);
     }
-    logger.error(err);
+    logger.error(err as string);
     return createResponse('Unable to retrieve delegated booking', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
-function getAppRef(pathParams: { [key: string]: string } | null): number | null {
+function getAppRef(pathParams: APIGatewayProxyEventPathParameters | null): number | null {
   if (pathParams === null
     || typeof pathParams.applicationReference !== 'string'
     || pathParams.applicationReference.trim().length === 0) {
