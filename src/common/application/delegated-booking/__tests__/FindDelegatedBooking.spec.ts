@@ -23,7 +23,7 @@ describe('FindDelegatedBooking', () => {
 
   describe('findDelegatedBooking', () => {
     it('should throw DelegatedBookingNotFoundError when the repo cant get the booking', async () => {
-      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking').and.returnValue(null);
+      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking').and.returnValue(Promise.resolve(null));
 
       try {
         await findDelegatedBooking(12345678910);
@@ -40,7 +40,8 @@ describe('FindDelegatedBooking', () => {
         staffNumber: '123467',
         bookingDetail: Buffer.from(''),
       };
-      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking').and.returnValue(compressedBookingFromRepo);
+      spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking')
+        .and.returnValue(Promise.resolve(compressedBookingFromRepo));
       moqDecompressDelegatedBooking.reset();
       moqDecompressDelegatedBooking.setup(x => x(It.isAny())).throws(new Error('invalid'));
 
@@ -60,7 +61,7 @@ describe('FindDelegatedBooking', () => {
         bookingDetail: Buffer.from('abc'),
       };
       spyOn(DynamoDelegatedBookingRepository, 'getDelegatedBooking')
-        .and.returnValue(compressedBookingFromRepo);
+        .and.returnValue(Promise.resolve(compressedBookingFromRepo));
 
       const result = await findDelegatedBooking(12345678910);
       moqDecompressDelegatedBooking.verify(x => x(It.isValue(Buffer.from('abc'))), Times.once());

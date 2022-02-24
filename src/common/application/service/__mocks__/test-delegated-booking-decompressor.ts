@@ -1,4 +1,3 @@
-import { VehicleGearbox, Initiator } from '@dvsa/mes-journal-schema';
 import { DelegatedExaminerTestSlot } from '../../../domain/DelegatedBookingRecord';
 
 export const booking: DelegatedExaminerTestSlot = {
