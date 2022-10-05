@@ -16,7 +16,7 @@
     "lint": "eslint -c .eslintrc.js --ext .ts src",
     "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts src",
     "package": "./package.sh",
-    "security-scan": "git secrets --scan",
+    "security-scan": "git secrets --scan && git log -p | scanrepo",
     "start": "sls dynamodb install && sls offline start",
     "test": "npm run compile && jasmine",
     "test:jasmine-coverage": "nyc npm run test",
