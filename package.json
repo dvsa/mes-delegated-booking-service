@@ -22,7 +22,7 @@
     "test:jasmine-coverage": "nyc npm run test"
   },
   "dependencies": {
-    "aws-sdk": "^2.1080.0",
+    "aws-sdk": "^2.1226.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
