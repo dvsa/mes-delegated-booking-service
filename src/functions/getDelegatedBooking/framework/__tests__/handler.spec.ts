@@ -41,7 +41,6 @@ describe('getDelegatedBooking handler', () => {
       expect(createResponse.default).toHaveBeenCalledWith(booking);
     });
   });
-
   describe('given FindDelegatedBooking throws a DelegatedBookingNotFoundError error', () => {
     it('should return HTTP 404 NOT_FOUND', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new DelegatedBookingNotFoundError());
@@ -49,7 +48,6 @@ describe('getDelegatedBooking handler', () => {
       expect(createResponse.default).toHaveBeenCalledWith({}, 404);
     });
   });
-
   describe('given the FindDelegatedBooking throws', () => {
     it('should respond with internal server error', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new Error('Unable to retrieve delegated booking'));
