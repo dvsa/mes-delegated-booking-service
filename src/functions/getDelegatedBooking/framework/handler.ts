@@ -13,6 +13,9 @@ import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import { findDelegatedBooking } from '../../../common/application/delegated-booking/FindDelegatedBooking';
 import { DelegatedBookingNotFoundError } from '../../../common/domain/errors/delegated-booking-not-found-error';
 import { Metric } from '../../../common/application/metric/metric';
+import {
+  DelegatedBookingDecompressionError,
+} from '../../../common/domain/errors/delegated-booking-decompression-error';
 
 export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
   bootstrapLogging('delegated-booking-service', event);
@@ -42,13 +45,15 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
     return createResponse(booking);
   } catch (err) {
     if (err instanceof DelegatedBookingNotFoundError) {
-      customMetric(
-        Metric.DelegatedBookingNotFound,
-        'Delegated booking not found using app ref',
-        applicationReference,
-      );
+      customMetric(Metric.DelegatedBookingNotFound, 'Delegated booking not found using app ref', applicationReference);
       return createResponse({}, HttpStatus.NOT_FOUND);
     }
+
+    if (err instanceof DelegatedBookingDecompressionError) {
+      customMetric(Metric.DelegatedDecompressionError, 'Delegated booking decompression error', applicationReference);
+      return createResponse('Unable to decompress booking', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     error('Unknown error', err);
     return createResponse('Unable to retrieve delegated booking', HttpStatus.INTERNAL_SERVER_ERROR);
   }
