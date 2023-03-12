@@ -4,7 +4,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   environment:
-    DELEGATED_BOOKING_DDB_TABLE_NAME: delegated-booking
+    DELEGATED_BOOKING_DDB_TABLE_NAME: testCentres
 
 package:
   individually: true
@@ -14,26 +14,36 @@ functions:
     handler: src/functions/getDelegatedBooking/framework/handler.handler
     events:
       - http:
-          path: 'delegated-booking/{applicationReference}'
+          path: 'delegated-bookings/{applicationReference}'
           method: get
+          authorizer:
+            type: CUSTOM
+            authorizerId: some-id
+          localAuthorizer:
+            name: LOCAL_AUTH_PROXY
+            type: request
+
 custom:
   dynamodb:
+    stages:
+      - dev
     start:
       port: 8000
       inMemory: true
       migrate: true
       seed: true
     seed:
-      test:
+      dev:
         sources:
-          - table: delegated-booking
-            sources: [./test-data/dynamo-seed-journal.json]
+          - table: delegated-bookings
+            sources: [./test-data/dynamo-seed-dlg-bookings.json]
+
   webpack:
     webpackConfig: 'webpack-sls-offline.config.js'
 
 resources:
   Resources:
-    penaltyDocuments:
+    journals:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DELEGATED_BOOKING_DDB_TABLE_NAME}
@@ -48,6 +58,7 @@ resources:
           WriteCapacityUnits: 5
 
 plugins:
+  - serverless-offline-local-authorizers-plugin
   - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-dynamodb-local
