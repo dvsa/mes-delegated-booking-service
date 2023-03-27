@@ -7,7 +7,7 @@ import { getDelegatedBooking } from '../../framework/aws/DynamoDelegatedBookingR
 
 export async function findDelegatedBooking(
   appRef: number,
-): Promise<DelegatedExaminerTestSlot | null> {
+): Promise<DelegatedExaminerTestSlot> {
   const delegatedBookingRecord: DelegatedBookingRecord | null = await getDelegatedBooking(appRef);
   if (!delegatedBookingRecord) {
     throw new DelegatedBookingNotFoundError();

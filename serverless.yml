@@ -2,7 +2,7 @@ service: mes-delegated-bookings-service
 
 provider:
   name: aws
-  runtime: nodejs14
+  runtime: nodejs14.x
   environment:
     DELEGATED_BOOKING_DDB_TABLE_NAME: delegated-booking
 

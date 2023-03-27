@@ -1,6 +1,7 @@
 import {
   APIGatewayProxyEvent, Context, APIGatewayEventRequestContext, APIGatewayProxyEventPathParameters,
 } from 'aws-lambda';
+import { bootstrapLogging } from '@dvsa/mes-microservice-common/application/utils/logger';
 import createResponse from '../../../common/application/utils/createResponse';
 import { HttpStatus } from '../../../common/application/api/HttpStatus';
 import * as logger from '../../../common/application/utils/logger';
@@ -8,6 +9,8 @@ import { findDelegatedBooking } from '../../../common/application/delegated-book
 import { DelegatedBookingNotFoundError } from '../../../common/domain/errors/delegated-booking-not-found-error';
 
 export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
+  bootstrapLogging('delegated-booking-service', event);
+
   const applicationReference = getAppRef(event.pathParameters);
   if (applicationReference === null) {
     return createResponse('No applicationReference provided', HttpStatus.BAD_REQUEST);
@@ -26,10 +29,6 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
   try {
     logger.info(`Finding delegated booking for app ref ${applicationReference}`);
     const booking = await findDelegatedBooking(applicationReference);
-    if (booking === null) {
-      logger.customMetric('DelegatedBookingNoContent', 'Booking has no content (HTTP 204)');
-      return createResponse({}, HttpStatus.NO_CONTENT);
-    }
     return createResponse(booking);
   } catch (err) {
     if (err instanceof DelegatedBookingNotFoundError) {

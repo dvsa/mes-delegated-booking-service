@@ -34,15 +34,15 @@ describe('getDelegatedBooking handler', () => {
     spyOn(FindDelegatedBooking, 'findDelegatedBooking').and.callFake(moqFindDelegatedBooking.object);
   });
 
-  describe('given the FindJournal returns a journal', () => {
-    it('should return a successful response with the journal', async () => {
+  describe('given the FindDelegatedBooking returns a booking', () => {
+    it('should return a successful response with the booking', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(booking));
       await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith(booking);
     });
   });
 
-  describe('given FindJournal throws a JournalNotFound error', () => {
+  describe('given FindDelegatedBooking throws a DelegatedBookingNotFoundError error', () => {
     it('should return HTTP 404 NOT_FOUND', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new DelegatedBookingNotFoundError());
       await handler(dummyApigwEvent, dummyContext);
@@ -50,19 +50,11 @@ describe('getDelegatedBooking handler', () => {
     });
   });
 
-  describe('given the FindJournal throws', () => {
+  describe('given the FindDelegatedBooking throws', () => {
     it('should respond with internal server error', async () => {
       moqFindDelegatedBooking.setup(x => x(It.isAny())).throws(new Error('Unable to retrieve delegated booking'));
       await handler(dummyApigwEvent, dummyContext);
       expect(createResponse.default).toHaveBeenCalledWith('Unable to retrieve delegated booking', 500);
-    });
-  });
-
-  describe('given there is no data but successful request', () => {
-    it('should indicate a successful request with no data', async () => {
-      moqFindDelegatedBooking.setup(x => x(It.isAny())).returns(() => Promise.resolve(null));
-      await handler(dummyApigwEvent, dummyContext);
-      expect(createResponse.default).toHaveBeenCalledWith({}, 204);
     });
   });
   describe('given there is no applicationReference provided', () => {
