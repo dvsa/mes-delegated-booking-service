@@ -1,6 +1,5 @@
+import { warn } from '@dvsa/mes-microservice-common/application/utils/logger';
 import { DynamoDB } from 'aws-sdk';
-
-import * as logger from '../../../common/application/utils/logger';
 import { DelegatedBookingRecord } from '../../domain/DelegatedBookingRecord';
 
 const createDynamoClient = () => {
@@ -30,7 +29,7 @@ export async function getDelegatedBooking(applicationReference: number): Promise
 function getDelegatedBookingTableName(): string {
   let tableName = process.env.DELEGATED_BOOKINGS_DDB_TABLE_NAME;
   if (tableName === undefined || tableName.length === 0) {
-    logger.warn('No delegated booking table name set, using the default');
+    warn('No delegated booking table name set, using the default');
     tableName = 'delegated-booking';
   }
   return tableName;

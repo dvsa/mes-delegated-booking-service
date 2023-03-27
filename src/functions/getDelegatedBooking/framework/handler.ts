@@ -1,12 +1,21 @@
 import {
   APIGatewayProxyEvent, Context, APIGatewayEventRequestContext, APIGatewayProxyEventPathParameters,
 } from 'aws-lambda';
-import { bootstrapLogging } from '@dvsa/mes-microservice-common/application/utils/logger';
+import {
+  bootstrapLogging,
+  customMetric,
+  error,
+  info,
+  warn,
+} from '@dvsa/mes-microservice-common/application/utils/logger';
 import createResponse from '../../../common/application/utils/createResponse';
 import { HttpStatus } from '../../../common/application/api/HttpStatus';
-import * as logger from '../../../common/application/utils/logger';
 import { findDelegatedBooking } from '../../../common/application/delegated-booking/FindDelegatedBooking';
 import { DelegatedBookingNotFoundError } from '../../../common/domain/errors/delegated-booking-not-found-error';
+import { Metric } from '../../../common/application/metric/metric';
+import {
+  DelegatedBookingDecompressionError,
+} from '../../../common/domain/errors/delegated-booking-decompression-error';
 
 export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
   bootstrapLogging('delegated-booking-service', event);
@@ -17,7 +26,7 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
   }
 
   if (!isValidAppRef(applicationReference)) {
-    logger.info(`App ref invalid ${applicationReference}`);
+    info(`App ref invalid ${applicationReference}`);
     return createResponse('Invalid applicationReference provided', HttpStatus.BAD_REQUEST);
   }
 
@@ -27,15 +36,25 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
   }
 
   try {
-    logger.info(`Finding delegated booking for app ref ${applicationReference}`);
+    info(`Finding delegated booking for app ref ${applicationReference}`);
+
     const booking = await findDelegatedBooking(applicationReference);
+
+    customMetric(Metric.DelegatedBookingFound, 'Delegated booking found and being returned');
+
     return createResponse(booking);
   } catch (err) {
     if (err instanceof DelegatedBookingNotFoundError) {
-      logger.customMetric('DelegatedBookingNotFound', 'Cannot find delegated booking (HTTP 404)');
+      customMetric(Metric.DelegatedBookingNotFound, 'Delegated booking not found using app ref', applicationReference);
       return createResponse({}, HttpStatus.NOT_FOUND);
     }
-    logger.error(err as string);
+
+    if (err instanceof DelegatedBookingDecompressionError) {
+      customMetric(Metric.DelegatedDecompressionError, 'Delegated booking decompression error', applicationReference);
+      return createResponse('Unable to decompress booking', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    error('Unknown error', err);
     return createResponse('Unable to retrieve delegated booking', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
@@ -43,8 +62,9 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
 function getAppRef(pathParams: APIGatewayProxyEventPathParameters | null): number | null {
   if (pathParams === null
     || typeof pathParams.applicationReference !== 'string'
-    || pathParams.applicationReference.trim().length === 0) {
-    logger.warn('No applicationReference path parameter found');
+    || pathParams.applicationReference.trim().length === 0
+  ) {
+    warn('No applicationReference path parameter found');
     return null;
   }
   return Number(pathParams.applicationReference);
