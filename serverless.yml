@@ -4,7 +4,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   environment:
-    DELEGATED_BOOKING_DDB_TABLE_NAME: testCentres
+    DELEGATED_BOOKING_DDB_TABLE_NAME: delegatedBookings
 
 package:
   individually: true

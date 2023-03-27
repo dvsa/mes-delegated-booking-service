@@ -32,9 +32,7 @@
   },
   "devDependencies": {
     "@dvsa/mes-journal-schema": "^1.2.2",
-    "@matthew2564/serverless-dynamodb-local": "^0.0.2",
     "@types/aws-lambda": "^8.10.108",
-    "@types/aws-sdk": "^2.7.0",
     "@types/jasmine": "^4.3.0",
     "@types/node": "^16.10.2",
     "@types/supertest": "^2.0.12",
@@ -53,6 +51,7 @@
     "rimraf": "^3.0.2",
     "serverless": "^3.23.0",
     "serverless-dotenv-plugin": "^4.0.2",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^11.0.1",
     "serverless-offline-local-authorizers-plugin": "^1.2.0",
     "serverless-webpack": "^5.10.0",
