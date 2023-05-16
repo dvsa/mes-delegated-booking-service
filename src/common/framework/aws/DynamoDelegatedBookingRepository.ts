@@ -1,29 +1,28 @@
 import { warn } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { DynamoDB } from 'aws-sdk';
+import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { DelegatedBookingRecord } from '../../domain/DelegatedBookingRecord';
 
 const createDynamoClient = () => {
   return process.env.IS_OFFLINE === 'true'
-    ? new DynamoDB.DocumentClient({ endpoint: 'http://localhost:8000' })
-    : new DynamoDB.DocumentClient();
+    ? DynamoDBDocument.from(new DynamoDB({ endpoint: 'http://localhost:8000' }))
+    : DynamoDBDocument.from(new DynamoDB({ region: 'eu-west-1' }));
 };
 
 const ddb = createDynamoClient();
 const tableName = getDelegatedBookingTableName();
 
 export async function getDelegatedBooking(applicationReference: number): Promise<DelegatedBookingRecord | null> {
-  const delegatedBookingGetResult = await ddb.get({
+  const response = await ddb.get({
     TableName: tableName,
-    Key: {
-      applicationReference,
-    },
-  }).promise();
+    Key: { applicationReference },
+  });
 
-  if (delegatedBookingGetResult.Item === undefined) {
+  if (response.Item === undefined) {
     return null;
   }
 
-  return delegatedBookingGetResult.Item as DelegatedBookingRecord;
+  return response.Item as DelegatedBookingRecord;
 }
 
 function getDelegatedBookingTableName(): string {

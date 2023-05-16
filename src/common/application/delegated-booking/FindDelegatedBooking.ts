@@ -1,4 +1,3 @@
-import { error } from '@dvsa/mes-microservice-common/application/utils/logger';
 import { decompressDelegatedBooking } from '../service/delegated-booking-decompressor';
 import { DelegatedBookingRecord, DelegatedExaminerTestSlot } from '../../domain/DelegatedBookingRecord';
 import { DelegatedBookingNotFoundError } from '../../domain/errors/delegated-booking-not-found-error';
@@ -15,8 +14,7 @@ export async function findDelegatedBooking(
 
   try {
     return decompressDelegatedBooking(delegatedBookingRecord.bookingDetail);
-  } catch (err) {
-    error('decompressDelegatedBooking err', err);
+  } catch {
     throw new DelegatedBookingDecompressionError();
   }
 }

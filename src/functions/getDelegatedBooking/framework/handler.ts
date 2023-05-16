@@ -1,5 +1,5 @@
 import {
-  APIGatewayProxyEvent, Context, APIGatewayEventRequestContext, APIGatewayProxyEventPathParameters,
+  APIGatewayProxyEvent, APIGatewayEventRequestContext, APIGatewayProxyEventPathParameters,
 } from 'aws-lambda';
 import {
   bootstrapLogging,
@@ -17,21 +17,23 @@ import {
   DelegatedBookingDecompressionError,
 } from '../../../common/domain/errors/delegated-booking-decompression-error';
 
-export async function handler(event: APIGatewayProxyEvent, fnCtx: Context) {
+export async function handler(event: APIGatewayProxyEvent) {
   bootstrapLogging('delegated-booking-service', event);
 
   const applicationReference = getAppRef(event.pathParameters);
   if (applicationReference === null) {
+    error('No applicationReference provided');
     return createResponse('No applicationReference provided', HttpStatus.BAD_REQUEST);
   }
 
   if (!isValidAppRef(applicationReference)) {
-    info(`App ref invalid ${applicationReference}`);
+    error(`App ref invalid ${applicationReference}`);
     return createResponse('Invalid applicationReference provided', HttpStatus.BAD_REQUEST);
   }
 
   const delegatedRequest = checkForDelegatedExaminerRole(event.requestContext);
   if (!delegatedRequest) {
+    error('No delegated examiner role present in request');
     return createResponse('No delegated examiner role present in request', HttpStatus.UNAUTHORIZED);
   }
 
