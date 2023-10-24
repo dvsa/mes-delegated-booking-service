@@ -2,7 +2,7 @@ service: mes-delegated-bookings-service
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   environment:
     DELEGATED_BOOKING_DDB_TABLE_NAME: delegatedBookings
 
@@ -61,5 +61,5 @@ plugins:
   - serverless-offline-local-authorizers-plugin
   - serverless-dotenv-plugin
   - serverless-webpack
-  - serverless-dynamodb-local
+  - serverless-dynamodb
   - serverless-offline
