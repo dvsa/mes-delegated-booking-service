@@ -61,5 +61,5 @@ plugins:
   - serverless-offline-local-authorizers-plugin
   - serverless-dotenv-plugin
   - serverless-webpack
-  - serverless-dynamodb-local
+  - serverless-dynamodb
   - serverless-offline
