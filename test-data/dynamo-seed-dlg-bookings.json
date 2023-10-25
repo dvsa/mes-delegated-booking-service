@@ -1,16 +1,8 @@
 [
   {
-    "applicationReference": {
-      "N": "24306753010"
-    },
-    "bookingDetail": {
-      "B": "H4sIAOjSYWAC/1VRwW7CMAz9FZTzkNI0bRduG91h0sYkQNuuITEQURKWBgRC/PvitAN2s5+fn5/tM4Gj3BoL/lWT0YBw/i3Iw4AEaMOscSFiZ9LGoIYgTXNNO3ZeMMGznGFHG6RHOmGUZUOaD5mY02pE2YhSrMMxgNWg51E50payaeES8QOsjWpgftrB2GlAhU9ObgV0cV/MWBq3cG5j7CoZUtJqo2WAlGlvDuAn++0CPDZMX2ohBH2kZfElqskUu5H8sXw2PqyTpngshjS6zrB4leuWzDjlTJTVv9JEbrtpS+Pb0Gfk3QGyGnmD3uK60ccFV5W7XWOUDMbZ1HuXd6MYz2lZFfndgjP42YNVqJWhgTWoTW1WBm9I+0eNo6GV8yeUqLtRCQYbfOdSpbB/Gs3LtEvC/nziWwb1U7q8crG5P3edsZxHzcsv2kMPzSoCAAA="
-    },
-    "lastUpdatedAt": {
-      "N": "1617023720974"
-    },
-    "staffNumber": {
-      "S": "44X9"
-    }
+    "applicationReference": 24306753010,
+    "bookingDetail": "H4sIAOjSYWAC/1VRwW7CMAz9FZTzkNI0bRduG91h0sYkQNuuITEQURKWBgRC/PvitAN2s5+fn5/tM4Gj3BoL/lWT0YBw/i3Iw4AEaMOscSFiZ9LGoIYgTXNNO3ZeMMGznGFHG6RHOmGUZUOaD5mY02pE2YhSrMMxgNWg51E50payaeES8QOsjWpgftrB2GlAhU9ObgV0cV/MWBq3cG5j7CoZUtJqo2WAlGlvDuAn++0CPDZMX2ohBH2kZfElqskUu5H8sXw2PqyTpngshjS6zrB4leuWzDjlTJTVv9JEbrtpS+Pb0Gfk3QGyGnmD3uK60ccFV5W7XWOUDMbZ1HuXd6MYz2lZFfndgjP42YNVqJWhgTWoTW1WBm9I+0eNo6GV8yeUqLtRCQYbfOdSpbB/Gs3LtEvC/nziWwb1U7q8crG5P3edsZxHzcsv2kMPzSoCAAA=",
+    "lastUpdatedAt": "1617023720974",
+    "staffNumber": "44X9"
   }
 ]
