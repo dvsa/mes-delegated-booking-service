@@ -10,6 +10,7 @@ ehthumbs.db
 node_modules
 build
 npm-debug.log
+.env
 .vscode
 *.tar
 *.zip

@@ -4,7 +4,8 @@ provider:
   name: aws
   runtime: nodejs18.x
   environment:
-    DELEGATED_BOOKING_DDB_TABLE_NAME: delegatedBookings
+    DELEGATED_BOOKINGS_DDB_TABLE_NAME: delegatedBookings
+    DDB_OFFLINE_ENDPOINT: http://localhost:8000
 
 package:
   individually: true
@@ -18,7 +19,7 @@ functions:
           method: get
           authorizer:
             type: CUSTOM
-            authorizerId: some-id
+            authorizerId: customAuth
           localAuthorizer:
             name: LOCAL_AUTH_PROXY
             type: request
@@ -27,26 +28,26 @@ custom:
   dynamodb:
     stages:
       - dev
+      - test
     start:
       port: 8000
       inMemory: true
       migrate: true
       seed: true
     seed:
-      dev:
+      test:
         sources:
-          - table: delegated-bookings
-            sources: [./test-data/dynamo-seed-dlg-bookings.json]
-
+          - table: delegatedBookings
+            sources: [ ./test-data/dynamo-seed-dlg-bookings.json ]
   webpack:
     webpackConfig: 'webpack-sls-offline.config.js'
 
 resources:
   Resources:
-    journals:
+    delegatedBookings:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.environment.DELEGATED_BOOKING_DDB_TABLE_NAME}
+        TableName: ${self:provider.environment.DELEGATED_BOOKINGS_DDB_TABLE_NAME}
         AttributeDefinitions:
           - AttributeName: applicationReference
             AttributeType: N

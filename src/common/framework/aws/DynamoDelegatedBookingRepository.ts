@@ -1,29 +1,37 @@
 import { warn } from '@dvsa/mes-microservice-common/application/utils/logger';
-import { DynamoDB } from 'aws-sdk';
+import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import { fromIni } from '@aws-sdk/credential-providers';
 import { DelegatedBookingRecord } from '../../domain/DelegatedBookingRecord';
 
-const createDynamoClient = () => {
-  return process.env.IS_OFFLINE === 'true'
-    ? new DynamoDB.DocumentClient({ endpoint: 'http://localhost:8000' })
-    : new DynamoDB.DocumentClient();
+const createDynamoClient = (): DynamoDBDocument => {
+  const opts = { region: 'eu-west-1' } as DynamoDBClientConfig;
+
+  if (process.env.USE_CREDENTIALS === 'true') {
+    warn('Using AWS credentials');
+    opts.credentials = fromIni();
+  } else if (process.env.IS_OFFLINE === 'true') {
+    warn('Using SLS offline');
+    opts.endpoint = process.env.DDB_OFFLINE_ENDPOINT;
+  }
+
+  return DynamoDBDocument.from(new DynamoDBClient(opts));
 };
 
 const ddb = createDynamoClient();
 const tableName = getDelegatedBookingTableName();
 
 export async function getDelegatedBooking(applicationReference: number): Promise<DelegatedBookingRecord | null> {
-  const delegatedBookingGetResult = await ddb.get({
+  const result = await ddb.get({
     TableName: tableName,
-    Key: {
-      applicationReference,
-    },
-  }).promise();
+    Key: { applicationReference },
+  });
 
-  if (delegatedBookingGetResult.Item === undefined) {
+  if (result.Item === undefined) {
     return null;
   }
 
-  return delegatedBookingGetResult.Item as DelegatedBookingRecord;
+  return result.Item as DelegatedBookingRecord;
 }
 
 function getDelegatedBookingTableName(): string {
