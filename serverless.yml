@@ -6,6 +6,8 @@ provider:
   environment:
     DELEGATED_BOOKINGS_DDB_TABLE_NAME: delegatedBookings
     DDB_OFFLINE_ENDPOINT: http://localhost:8000
+    AWS_ACCESS_KEY_ID: accessKeyId
+    AWS_SECRET_ACCESS_KEY: secretAccessKey
 
 package:
   individually: true
