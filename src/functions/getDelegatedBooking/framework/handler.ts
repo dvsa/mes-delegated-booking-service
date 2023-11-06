@@ -1,25 +1,21 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
-import {
-  bootstrapLogging,
-  customMetric,
-  error,
-  info,
-} from '@dvsa/mes-microservice-common/application/utils/logger';
-import createResponse from '../../../common/application/utils/createResponse';
-import { HttpStatus } from '../../../common/application/api/HttpStatus';
-import { findDelegatedBooking } from '../../../common/application/delegated-booking/FindDelegatedBooking';
-import { DelegatedBookingNotFoundError } from '../../../common/domain/errors/delegated-booking-not-found-error';
-import { Metric } from '../../../common/application/metric/metric';
-import {
-  DelegatedBookingDecompressionError,
-} from '../../../common/domain/errors/delegated-booking-decompression-error';
-import {checkForDelegatedExaminerRole, getAppRef, isValidAppRef} from '../application/request-validator';
+import {APIGatewayProxyEvent} from 'aws-lambda';
+import {bootstrapLogging, customMetric, error, info} from '@dvsa/mes-microservice-common/application/utils/logger';
+import {getPathParam} from '@dvsa/mes-microservice-common/framework/validation/event-validation';
+import {HttpStatus} from '@dvsa/mes-microservice-common/application/api/http-status';
+import {createResponse} from '@dvsa/mes-microservice-common/application/api/create-response';
+import {findDelegatedBooking} from '../../../common/application/delegated-booking/FindDelegatedBooking';
+import {DelegatedBookingNotFoundError} from '../../../common/domain/errors/delegated-booking-not-found-error';
+import {Metric} from '../../../common/application/metric/metric';
+import {DelegatedBookingDecompressionError} from '../../../common/domain/errors/delegated-booking-decompression-error';
+import {isValidAppRef} from '../application/request-validator';
+import {getRoleFromRequestContext} from '@dvsa/mes-microservice-common/framework/security/authorisation';
+import {ExaminerRole} from '@dvsa/mes-microservice-common/domain/examiner-role';
 
 export async function handler(event: APIGatewayProxyEvent) {
   bootstrapLogging('get-delegated-booking', event);
 
-  const applicationReference = getAppRef(event.pathParameters);
-  if (applicationReference === null) {
+  const applicationReference = Number(getPathParam(event.pathParameters, 'applicationReference'));
+  if (!applicationReference) {
     error('No applicationReference provided');
     return createResponse('No applicationReference provided', HttpStatus.BAD_REQUEST);
   }
@@ -29,7 +25,7 @@ export async function handler(event: APIGatewayProxyEvent) {
     return createResponse('Invalid applicationReference provided', HttpStatus.BAD_REQUEST);
   }
 
-  const delegatedRequest = checkForDelegatedExaminerRole(event.requestContext);
+  const delegatedRequest = getRoleFromRequestContext(event.requestContext) === ExaminerRole.DLG;
   if (!delegatedRequest) {
     error('No delegated examiner role present in request');
     return createResponse('No delegated examiner role present in request', HttpStatus.UNAUTHORIZED);
