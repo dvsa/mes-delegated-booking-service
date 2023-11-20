@@ -2,7 +2,7 @@ service: mes-delegated-bookings-service
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs20.x
   environment:
     DELEGATED_BOOKINGS_DDB_TABLE_NAME: delegatedBookings
     DDB_OFFLINE_ENDPOINT: http://localhost:8000
