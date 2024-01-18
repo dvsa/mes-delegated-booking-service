@@ -24,7 +24,8 @@
     "start": "sls offline start",
     "test": "npm run compile && jasmine",
     "test:jasmine-coverage": "c8 npm run test",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.435.0",
@@ -59,6 +60,7 @@
     "serverless-offline": "^13.2.0",
     "serverless-offline-local-authorizers-plugin": "^1.2.0",
     "serverless-webpack": "^5.13.0",
+    "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-loader": "^9.5.0",
