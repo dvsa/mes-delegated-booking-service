@@ -30,7 +30,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.454.0",
     "@aws-sdk/lib-dynamodb": "^3.454.0",
-    "@dvsa/mes-microservice-common": "1.1.12",
+    "@dvsa/mes-microservice-common": "1.2.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
